@@ -5,6 +5,7 @@ import { CryptoState } from '../CryptoContext';
 import AuthModal from './Authentication/AuthModal';
 import UserSidebar from './Authentication/UserSidebar';
 
+
 const useStyles =makeStyles({
     root: {
         color: 'gold',
@@ -31,8 +32,10 @@ function Header() {
    
     return (
        <ThemeProvider theme={darkTheme}>
+       
           <AppBar position="static" color="transparent">
           <Container>
+          
             <Toolbar>
                 <Typography className={classes.root} onClick={()=>navigate("/")}>Crypto Hunter </Typography>
                   <Select variant="outlined"  value={currency} onChange={(e)=>setCurrency(e.target.value)} >
