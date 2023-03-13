@@ -28,12 +28,20 @@ function Header() {
     });
     const classes = useStyles();
     let navigate=useNavigate();
-    const {currency ,setCurrency,user }=CryptoState();
+    const {currency ,setCurrency,user,language,setLanguage }=CryptoState();
+    
+
+    const handleLanguageChange = (e) => {
+        setLanguage(e.target.value);
+      };
+    
    
     return (
        <ThemeProvider theme={darkTheme}>
        
           <AppBar position="static" color="transparent">
+           
+          
           <Container>
           
             <Toolbar>
@@ -41,6 +49,12 @@ function Header() {
                   <Select variant="outlined"  value={currency} onChange={(e)=>setCurrency(e.target.value)} >
                   <MenuItem value={"USD"}>USD</MenuItem>
                   <MenuItem value={"INR"}>INR</MenuItem>
+                  </Select>
+                  <Select variant="outlined"  value={language} onChange={(e)=>setLanguage(e.target.value)} >
+                  <MenuItem value='en'>English</MenuItem>
+                  <MenuItem value='es'>Spanish</MenuItem>
+                  <MenuItem value='fr'>French</MenuItem>
+                  
                   </Select>
                  
                { user?<UserSidebar/>:<AuthModal/>}

@@ -1,7 +1,9 @@
 import { Container, makeStyles, Typography } from '@material-ui/core';
+import axios from 'axios';
 
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { CryptoState } from '../../CryptoContext';
 import Carousel from './Carousel';
 
 const useStyles= makeStyles(()=>({
@@ -28,6 +30,46 @@ const useStyles= makeStyles(()=>({
 
 function Banner() {
     const classes=useStyles();
+     const {language} = CryptoState();
+     const [original,setOriginal] = useState('Crypto Hunter,Get all the Info regarding your favorite Crypto Currency');
+     const [translated,setTranslated] = useState([])
+      const API_KEY=  process.env.REACT_APP_API_KEY;
+
+     const translateContent= async ()=> {
+      try {
+      const {data} = await axios.post(
+       'https://translation.googleapis.com/language/translate/v2',
+       null,
+       {
+         params: {
+           q: original, // join the strings with a newline delimiter
+           target: language,
+           key: API_KEY,
+         },
+       }
+     );
+  //  split the translated text into an array of strings using the same delimiter
+     const temp = data.data.translations.map((t) =>
+       t.translatedText.split(',')
+     );
+      setTranslated(temp[0])
+  console.log('banner',translated)
+      }
+        catch (e) {
+              console.error(e);
+        }
+     
+
+          
+}
+
+useEffect(() => {
+  translateContent()
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [language])
+
+
+    
   return (
     <div className={classes.banner}>
     <Container className={classes.bannerContent}>
@@ -38,7 +80,7 @@ function Banner() {
            marginBottom:15,
            fontFamily:"Montserrat",
        }}>
-                Crypto Hunter
+           {translated[0]}  
      </Typography>
      <Typography
             variant="subtitle2"
@@ -48,7 +90,7 @@ function Banner() {
               fontFamily: "Montserrat",
             }}
           >
-            Get all the Info regarding your favorite Crypto Currency
+            {translated[1]}
           </Typography>
           <Carousel />
     </div>

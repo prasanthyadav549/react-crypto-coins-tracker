@@ -16,6 +16,7 @@ function CryptoContext({children}) {
     const [coins, setCoins] = useState([]);
     const [loading, setLoading] = useState(false);
     const [watchlist, setWatchlist] = useState([]);
+    const [language,setLanguage] = useState('en');
     // create a state for user
     const [user, setUser] = useState(null)
     const [alert,setAlert] = useState(
@@ -82,7 +83,7 @@ function CryptoContext({children}) {
     
     }, [currency]);
     
-  return <Crypto.Provider value={{currency,setCurrency,symbol,coins, loading,fetchCoins,alert,setAlert,user,watchlist,setWatchlist,setSymbol}}>{children}</Crypto.Provider>
+  return <Crypto.Provider value={{currency,setCurrency,symbol,coins, loading,fetchCoins,alert,setAlert,user,watchlist,setWatchlist,setSymbol,language,setLanguage}}>{children}</Crypto.Provider>
 
  
 }

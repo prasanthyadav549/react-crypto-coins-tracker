@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Pagination from "@material-ui/lab/Pagination";
+import axios from 'axios';
 import {
   Container,
   createTheme,
@@ -19,6 +20,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { CryptoState } from "../CryptoContext";
+import { fetchSignInMethodsForEmail } from "firebase/auth";
 
 export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -28,9 +30,16 @@ export default function CoinsTable() {
  
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [spanish, setSpanish] = useState([]);
+  const [french, serFrench] = useState([]);
+  const [spanishName, setSpanishName] = useState([]);
+  const [frenchName, serFrenchName] = useState([]);
+  const [header,setHeader] = useState('Cryptocurrency Prices by Market Cap')
+  const [mp1,setMp1] = useState({})
 
-  const { currency, symbol,coins, loading, fetchCoins} = CryptoState();
 
+  const { currency, symbol,coins, loading, fetchCoins, language} = CryptoState();
+       
   const useStyles = makeStyles({
     row: {
       backgroundColor: "#16171a",
@@ -59,11 +68,61 @@ export default function CoinsTable() {
     },
   });
 
+  const changeLanguage = async () => {
+                 
+         const sy = coins.map((coin) => coin.symbol)
+         const nam = coins.map((coin) => coin.name)
+         let { data } = await axios.post(
+          'https://translation.googleapis.com/language/translate/v2',
+          {},
+          {
+            params: {
+              q: sy.join(','),
+              target: 'es',
+              key: process.env.REACT_APP_API_KEY,
+            },
+          }
+        );
+        let temp = data.data.translations.map((t) =>
+       t.translatedText.split(',')
+     );
+      setSpanish(temp[0]);
+       console.log('data1', spanish)
+
+           
+  } 
+  
+
+  const translateHeader = async () => {
+    const { data } = await axios.post(
+      'https://translation.googleapis.com/language/translate/v2',
+      {},
+      {
+        params: {
+          q: header,
+          target: language,
+          key: process.env.REACT_APP_API_KEY,
+        },
+      }
+    );
+    setHeader(data.data.translations[0].translatedText);
+  };
   
   useEffect(() => {
     fetchCoins();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency]);
+
+  useEffect(() => {
+        changeLanguage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+  useEffect(() => {
+         translateHeader();
+  },[language]);
+
 
   const handleSearch = () => {
 
@@ -88,7 +147,7 @@ export default function CoinsTable() {
           variant="h4"
           style={{ margin: 18, fontFamily: "Montserrat" }}
         >
-          Cryptocurrency Prices by Market Cap
+          {header}
         </Typography>
         <TextField
           label="Search For a Crypto Currency.."
