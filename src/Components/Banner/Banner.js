@@ -31,7 +31,7 @@ const useStyles= makeStyles(()=>({
 function Banner() {
     const classes=useStyles();
      const {language} = CryptoState();
-     const [original,setOriginal] = useState('Crypto Hunter,Get all the Info regarding your favorite Crypto Currency');
+     const [original,setOriginal] = useState('Crypto,Get all the Info regarding your favorite Crypto Currency');
      const [translated,setTranslated] = useState([])
       const API_KEY=  process.env.REACT_APP_API_KEY;
 
